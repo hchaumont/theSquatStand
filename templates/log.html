@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block page_content%}
+<div class="page-header" }>
+    <h1>Log Workout</h1>
+</div>
+<form method="POST">
+    <div class="container" id="workout-info">
+        {{ wtf.form_errors(form, hiddens="only") }}
+        {{ wtf.form_field(form.name) }}
+        {{ wtf.form_field(form.date) }} 
+        {{ wtf.form_field(form.notes, rows="4") }}
+    </div>
+    <hr> 
+    <div class="container" id="exercise-container">
+        {% for exercise in form.exercises %}
+            <div data-toggle="entry-container">
+                {{ wtf.form_field(exercise.exname) }}
+                <ul class="list-group" id="exset-{{ loop.index0 }}" data-exnum="{{ loop.index0 }}">
+                    {% for entry in exercise.entries %}
+                        <!-- Sets -->
+                        <li class="list-group-item" data-entrynum="{{ loop.index0 }}">
+                            <div class="form-inline">
+                                {{ entry.weight.label(class="control-label") }} {{ entry.weight(class="form-control") }} 
+                                {{ entry.reps.label(class="control-label") }} {{ entry.reps(class="form-control") }} 
+                                {{ entry.sets.label(class="control-label") }} {{ entry.sets(class="form-control") }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button type="button" class="btn btn-primary" data-toggle="addentry" data-target="#exset-{{ loop.index0 }}">Add set</button>
+                <button type="button" class="btn btn-primary" data-toggle="removeentry" data-target="#exset-{{ loop.index0 }}">Remove last set</button>
+                <hr> 
+            </div>
+        {% endfor %}
+        <button type="button" class="btn btn-primary" data-toggle="addexercise" data-target="#exercise-list">Add exercise</button>
+        <button type="button" class="btn btn-primary">Remove last exercise</button>
+    </div>
+    {{ form.hidden_tag() }}
+    {{ wtf.form_field(form.submit) }}
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='dynamicForm.js') }}"></script>
+{% endblock %}
