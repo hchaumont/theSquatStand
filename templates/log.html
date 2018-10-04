@@ -5,21 +5,22 @@
     <h1>Log Workout</h1>
 </div>
 <form method="POST">
-    <div class="container" id="workout-info">
+    <div class="container" id="workoutInfo">
         {{ wtf.form_errors(form, hiddens="only") }}
         {{ wtf.form_field(form.name) }}
         {{ wtf.form_field(form.date) }} 
         {{ wtf.form_field(form.notes, rows="4") }}
     </div>
     <hr> 
-    <div class="container" id="exercise-container">
+    <div class="container" data-toggle="exerciseContainer">
         {% for exercise in form.exercises %}
-            <div data-toggle="entry-container">
+            <!-- Exercises  -->
+            <div data-toggle="entryContainer" data-index="{{ loop.index0 }}">
                 {{ wtf.form_field(exercise.exname) }}
-                <ul class="list-group" id="exset-{{ loop.index0 }}" data-exnum="{{ loop.index0 }}">
+                <ul class="list-group">
                     {% for entry in exercise.entries %}
-                        <!-- Sets -->
-                        <li class="list-group-item" data-entrynum="{{ loop.index0 }}">
+                        <!-- Entries -->
+                        <li class="list-group-item" data-index="{{ loop.index0 }}">
                             <div class="form-inline">
                                 {{ entry.weight.label(class="control-label") }} {{ entry.weight(class="form-control") }} 
                                 {{ entry.reps.label(class="control-label") }} {{ entry.reps(class="form-control") }} 
@@ -28,14 +29,15 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <button type="button" class="btn btn-primary" data-toggle="addentry" data-target="#exset-{{ loop.index0 }}">Add set</button>
-                <button type="button" class="btn btn-primary" data-toggle="removeentry" data-target="#exset-{{ loop.index0 }}">Remove last set</button>
+                <button type="button" class="btn btn-primary" data-toggle="addEntry">Add set</button>
+                <button type="button" class="btn btn-primary" data-toggle="removeEntry" >Remove last set</button>
                 <hr> 
             </div>
         {% endfor %}
-        <button type="button" class="btn btn-primary" data-toggle="addexercise" data-target="#exercise-list">Add exercise</button>
-        <button type="button" class="btn btn-primary">Remove last exercise</button>
+        <button type="button" class="btn btn-primary" data-toggle="addExercise">Add exercise</button>
+        <button type="button" class="btn btn-primary" data-toggle="removeExercise">Remove last exercise</button>
     </div>
+    <hr>
     {{ form.hidden_tag() }}
     {{ wtf.form_field(form.submit) }}
 </form>
