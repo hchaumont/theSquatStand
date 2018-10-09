@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 import os
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextField, FloatField, FieldList
 from wtforms import TextAreaField, IntegerField, FormField
@@ -20,6 +21,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] =\
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 bootstrap = Bootstrap(app)
 
@@ -40,13 +42,21 @@ class Workout(db.Model):
 class Exercise(db.Model):
     __tablename__ = 'exercises'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    weight = db.Column(db.Float)
-    reps = db.Column(db.Integer)
+    exname = db.Column(db.String)
+    entries = db.relationship('Entry', backref='exercise')
     workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'))
 
     def __repr__(self):
         return '<{}: {}x{}>'.format(self.name, self.weight, self.reps)
+
+
+class Entry(db.Model):
+    __tablename__ = 'entries'
+    id = db.Column(db.Integer, primary_key=True)
+    weight = db.Column(db.Float)
+    reps = db.Column(db.Integer)
+    sets = db.Column()
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'))
 
 
 # Forms
@@ -67,7 +77,7 @@ class WorkoutInfoForm(FlaskForm):
     date = DateField('Workout Date:')
     # time = TimeField('Workout Time')
     notes = TextAreaField('Workout Notes:')
-    exercises = FieldList(FormField(ExerciseForm), min_entries=2)
+    exercises = FieldList(FormField(ExerciseForm), min_entries=1)
     submit = SubmitField('Submit')
 
 
@@ -79,12 +89,20 @@ def index():
 
 @app.route('/log', methods=['GET', 'POST'])
 def log():
-    form = WorkoutInfoForm()
+    workout = Workout()
+    exercise = Exercise()
+    entry = Entry()
+    exercise.entries = [entry]
+    workout.exercises = [exercise]
+
+    form = WorkoutInfoForm(obj=workout)
     if form.validate_on_submit():
         session['name'] = form.name.data
         session['date'] = form.date.data
-        # session['time'] = form.time.data
+        session['exercises'] = form.exercises.data
         session['notes'] = form.notes.data
+        form.populate_obj(workout)
+        db.session.commit()
         return redirect(url_for('summary'))
     return render_template('log.html', form=form)
 
@@ -93,7 +111,7 @@ def log():
 def summary():
     return render_template('summary.html', name=session.get('name'),
                            date=session.get('date'),
-                           notes=session.get('notes'))
+                           notes=session.get('notes'), exercises=session.get('exercises'))
 
 
 # Errors
