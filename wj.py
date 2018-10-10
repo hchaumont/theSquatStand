@@ -47,7 +47,7 @@ class Exercise(db.Model):
     workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'))
 
     def __repr__(self):
-        return '<{}: {}x{}>'.format(self.name, self.weight, self.reps)
+        return '<{}>'.format(self.exname)
 
 
 class Entry(db.Model):
@@ -55,8 +55,11 @@ class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     weight = db.Column(db.Float)
     reps = db.Column(db.Integer)
-    sets = db.Column()
+    sets = db.Column(db.Integer)
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'))
+
+    def __repr__(self):
+        return '<{} x {} reps x {} sets>'.format(self.weight, self.reps, self.sets)
 
 
 # Forms
@@ -68,7 +71,7 @@ class SetForm(NoCsrfForm):
 
 class ExerciseForm(NoCsrfForm):
     exname = StringField('Exercise Name')
-    entries = FieldList(FormField(SetForm), min_entries=1)
+    entries = FieldList(FormField(SetForm, default=lambda: Entry()), min_entries=1)
 
 
 class WorkoutInfoForm(FlaskForm):
@@ -77,7 +80,7 @@ class WorkoutInfoForm(FlaskForm):
     date = DateField('Workout Date:')
     # time = TimeField('Workout Time')
     notes = TextAreaField('Workout Notes:')
-    exercises = FieldList(FormField(ExerciseForm), min_entries=1)
+    exercises = FieldList(FormField(ExerciseForm, default=lambda: Exercise()), min_entries=1)
     submit = SubmitField('Submit')
 
 
@@ -102,6 +105,7 @@ def log():
         session['exercises'] = form.exercises.data
         session['notes'] = form.notes.data
         form.populate_obj(workout)
+        db.session.add(workout)
         db.session.commit()
         return redirect(url_for('summary'))
     return render_template('log.html', form=form)
