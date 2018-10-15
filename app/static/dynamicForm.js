@@ -11,7 +11,7 @@ $(document).ready(function(){
         newEntry.data("index", newIndex);
         // console.log(newEntry.data("index"));
 
-        // make sure names and labels are correctly incremented
+        // make sure labels, names, ids are correctly incremented
         newEntry.find("label").each(function() {
             var labelFor = $(this).attr("for");
             // console.log(labelFor);
@@ -30,17 +30,6 @@ $(document).ready(function(){
 
 
         oldEntry.after(newEntry);
-
-
-        // //newrow.attr('data-id', elem_num);
-        // newrow.find(":input").each(function() {
-        //     // console.log(this);
-        //     var id = $(this).attr('id').replace('entries-' + (oldentrynum) + '-', 'entries-' + (newentrynum) + '-');
-        //     $(this).attr('name', id).attr('id', id).val('').removeAttr("checked");
-        // });
-        // oldrow.after(newrow);
-        // console.log(newrow);
-
 
    });
 
@@ -82,11 +71,6 @@ $(document).ready(function(){
 
         oldExercise.after(newExercise);
 
-        // console.log(target);
-        // var oldex = target.find("div[data-toggle=exercise-list]:last");
-        // var newex = oldex.clone(true);
-        // console.log(newex);
-        // oldex.after(newex);
 
    });
 

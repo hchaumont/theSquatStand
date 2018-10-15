@@ -1,8 +1,12 @@
 {% extends "base.html" %}
-
+{% import 'macros.html' as macros %}
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Welcome to Workout Journal</h1>
+    <h1>Welcome to The Squat Stand</h1>
 </div>
+
+{% for summary in workout_summaries %}
+    {{ macros.render_summary(summary) }}
+{% endfor %}
 {% endblock %}

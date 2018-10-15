@@ -1,0 +1,30 @@
+{% macro render_summary(summary) %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ summary.name }}</h3>
+        </div>
+        <div class="panel-body">
+            <p><strong>Date: </strong>{{ summary.date }}</p>
+            <p><strong>Notes: </strong>{{ summary.notes }}</p>
+            <p><strong>Total Volume: </strong>{{ summary.volume }}</p>
+            <p><strong>Total Reps: </strong>{{ summary.reps }}</p>
+            {% for exercise in summary.exercises %}
+                <div class="panel-default">
+                    <div class="panel-heading">
+                        <strong>{{ exercise.exname }}</strong>
+                    </div>
+                    <div class="panel-body">
+                        <p><strong>Total Volume: </strong>{{ exercise.volume }}</p>
+                        <p><strong>Total Reps: </strong>{{ exercise.reps }}</p>
+                        <ul>
+                            {% for entry in exercise.entries %}
+                                <li>{{ entry.weight }} x {{ entry.reps }} reps x {{ entry.sets }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+{% endmacro %}

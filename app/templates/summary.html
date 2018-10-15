@@ -1,15 +1,11 @@
 {% extends "base.html" %}
-
+{% import 'macros.html' as macros %}
 
 {% block page_content%}
 <div class="page-header"}>
     <h1>Workout Summary</h1>
 </div>
 
-<ul>
-    <li> {% if name %}{{ name }}{% else %}No Name{% endif %}</li>
-    <li> {% if date %}{{ date }}{% else %}Today{% endif %}</li>
-    <li> {% if notes %}{{ notes }}{% else %}No notes{% endif %}</li>
-    <li> {% if exercises %}{{ exercises }}{% else %}Nothing{% endif %}</li>
-</ul>
+{{ macros.render_summary(summary) }}
+
 {% endblock %}

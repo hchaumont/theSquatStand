@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+{{ chart_div }}
+{{ chart_script}}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<link href="https://cdn.pydata.org/bokeh/release/bokeh-0.13.0.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.13.0.min.css" rel="stylesheet" type="text/css">
+
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.13.0.min.js"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-0.13.0.min.js"></script>
+{% endblock %}
