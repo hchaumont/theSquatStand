@@ -27,6 +27,7 @@ class WorkoutSummary:
 def createDailyVolumeChart(workoutSummaryList):
     df = pd.DataFrame([{'date': w.date, 'volume': w.volume} for w in workoutSummaryList])
     dailyVolume = df.groupby('date').sum()
-    p = figure(x_axis_type='datetime')
-    p.vbar(x=dailyVolume['date'], top=dailyVolume['volume'], width=1)
+    days = [str(d).split()[0] for d in dailyVolume.index]
+    p = figure(title='Daily Volume', x_range=days, y_axis_label='Volume')
+    p.vbar(x=days, top=dailyVolume['volume'], width=.9)
     return components(p)

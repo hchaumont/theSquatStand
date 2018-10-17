@@ -9,7 +9,7 @@ from .statistics import WorkoutSummary, createDailyVolumeChart
 # Routes
 @main.route('/')
 def index():
-    workouts = Workout.query.all()
+    workouts = Workout.query.order_by('date desc').all()
     workout_summaries = [WorkoutSummary(workout) for workout in workouts]
     return render_template('index.html', workouts=workouts, workout_summaries=workout_summaries)
 
