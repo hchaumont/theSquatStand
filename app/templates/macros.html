@@ -1,30 +1,32 @@
 {% macro render_summary(summary) %}
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">{{ summary.name }}</h3>
+            <h3 class="panel-title pull-left">{{ summary.name }}</h3>
+            <span class="panel-title pull-right">{{ summary.date.strftime('%A, %b %d, %Y') }}</span>
+            <div class="clearfix"></div>
         </div>
         <div class="panel-body">
-            <p><strong>Date: </strong>{{ summary.date }}</p>
-            <p><strong>Notes: </strong>{{ summary.notes }}</p>
-            <p><strong>Total Volume: </strong>{{ summary.volume }}</p>
-            <p><strong>Total Reps: </strong>{{ summary.reps }}</p>
+            <p><strong>Workout Notes: </strong>{{ summary.notes }}</p>
+            <p><strong>Total Volume: </strong>{{ summary.volume | int }} lbs, <strong>Total Reps: </strong>{{ summary.reps }}</p>
             {% for exercise in summary.exercises %}
                 <div class="panel-default">
                     <div class="panel-heading">
-                        <strong>{{ exercise.exname }}</strong>
+                        <div class="pull-left"><strong>{{ exercise.exname }}</strong></div>
+                        <div class="pull-right">{{ exercise.volume | int }} lbs, {{ exercise.reps }} total reps</div>
+                        <div class="clearfix"></div>
                     </div>
                     <div class="panel-body">
-                        <p><strong>Total Volume: </strong>{{ exercise.volume }}</p>
-                        <p><strong>Total Reps: </strong>{{ exercise.reps }}</p>
+                       <!--  <p><strong>Total Volume: </strong>{{ exercise.volume }}</p>
+                        <p><strong>Total Reps: </strong>{{ exercise.reps }}</p> -->
                         <ul>
                             {% for entry in exercise.entries %}
-                                <li>{{ entry.weight }} x {{ entry.reps }} reps x {{ entry.sets }}</li>
+                                <li>{{ entry.weight }} lbs. x {{ entry.reps }} reps x {{ entry.sets }} sets</li>
                             {% endfor %}
                         </ul>
                     </div>
                 </div>
             {% endfor %}
-
+        <a href={{ url_for('.edit', workout_id = summary.id) }}>Edit</a>
         </div>
     </div>
 {% endmacro %}

@@ -1,9 +1,8 @@
 import numpy as np
 import pandas as pd
 from bokeh.plotting import figure
-
 from bokeh.embed import components
-
+from ..models import db, Exercise, Entry
 
 class ExerciseSummary:
     def __init__(self, exercise):
@@ -28,6 +27,32 @@ def createDailyVolumeChart(workoutSummaryList):
     df = pd.DataFrame([{'date': w.date, 'volume': w.volume} for w in workoutSummaryList])
     dailyVolume = df.groupby('date').sum()
     days = [str(d).split()[0] for d in dailyVolume.index]
-    p = figure(title='Daily Volume', x_range=days, y_axis_label='Volume')
+    p = figure(title='Daily Volume', x_range=days, y_axis_label='Volume (lbs.)', height=300,
+               sizing_mode='scale_width')
     p.vbar(x=days, top=dailyVolume['volume'], width=.9)
     return components(p)
+
+
+def createDailyCharts(workoutSummaryList):
+    df = pd.DataFrame([{'date': w.date, 'volume': w.volume, 'reps': w.reps} for w in workoutSummaryList])
+    dailyVolume = df.groupby('date').sum()
+    days = [str(d).split()[0] for d in dailyVolume.index]
+    p = figure(title='Daily Volume', x_range=days, y_axis_label='Volume', 
+               height=300, sizing_mode='scale_width')
+    p.vbar(x=days, top=dailyVolume['volume'], width=.9)
+    q = figure(title='Daily Reps', x_range=days, y_axis_label='Reps',
+               height=300, sizing_mode='scale_width')
+    q.vbar(x=days, top=dailyVolume['reps'], width=.9)
+    return [components(p), components(q)]
+
+def getPR(exname):
+    exlist = Exercise.query.filter(Exercise.exname == exname).all()
+    PR = 0
+    for e in exlist:
+        PR = max(PR, max(ent.weight for ent in e.entries))
+    return PR
+
+
+def createPRList():
+    exnames = set(e[0] for e in db.session.query(Exercise.exname).all())
+    return [{'name': exname, 'weight': getPR(exname)} for exname in sorted(exnames)]

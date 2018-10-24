@@ -11,7 +11,45 @@
 
 
 {% block page_content %}
-{{ chart_div | safe }}
-{{ chart_script | safe }}
+<div class="page-header">
+    <h1>Workout Summary Statistics</h1>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Personal Records
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>Exercise</th>
+                <th>Weight</th>
+            </tr>
+            {% for PR in PRList %}
+                <tr>
+                    <td>{{ PR.name }}</td>
+                    <td>{{ PR.weight }} lbs.</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Daily Workout Volume
+    </div>
+    <div class="panel-body">
+        {{ charts[0][0] | safe }}
+        {{ charts[0][1] | safe }}
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Daily Workout Reps
+    </div>
+    <div class="panel-body">
+        {{ charts[1][0] | safe }}
+        {{ charts[1][1] | safe }}
+    </div>
+</div>
 {% endblock %}
 
