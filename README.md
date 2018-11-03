@@ -5,9 +5,9 @@ It is built using Flask for the back-end, Bootstrap for the front-end, and Bokeh
 
 In addition to keeping workout history, the Squat Stand tracks personal bests on each exercise and generates summary statistics including daily and weekly volume and rep counts.
 
-![Workout History](/images/history.png)
-
 ![Summaries](/images/stats.png)
+
+![Workout History](/images/history.png)
 
 ![Workout Entry](/images/entry.png)
 
